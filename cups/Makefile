@@ -40,6 +40,7 @@ define Package/cups/conffiles
 /etc/cups/classes.conf
 /etc/cups/cupsd.conf
 /etc/cups/printers.conf
+/etc/cups/ppd/
 endef
 
 define Package/cups-bsd
@@ -229,6 +230,11 @@ define Package/cups/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	# overwrite default config with our own
 	$(CP) ./files/etc/cups/* $(1)/etc/cups/
+	$(CP) ./files/etc/cups/cupsd.conf $(1)/etc/cups/cupsd.conf.default
+	# install initscript with priority 60
+	$(INSTALL_DIR) $(1)/etc/init.d $(1)/etc/config
+	$(INSTALL_BIN) ./files/cupsd.init $(1)/etc/init.d/cupsd
+	$(INSTALL_CONF) ./files/cupsd.config $(1)/etc/config/cupsd
 	$(INSTALL_BIN) \
 		$(PKG_INSTALL_DIR)/usr/sbin/{cupsctl,cupsd} \
 		$(1)/usr/sbin/

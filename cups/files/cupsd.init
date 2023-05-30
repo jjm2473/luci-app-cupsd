@@ -17,21 +17,11 @@ get_config() {
 start_service() {
 	config_load cupsd
 	config_foreach get_config cupsd
-	[ -x /etc/init.d/cupsd ] && /etc/init.d/cupsd stop
-	if [ x$enabled == x1 ]; then
-		[ -x /etc/init.d/cupsd ] && /etc/init.d/cupsd enable
-	else
-		[ -x /etc/init.d/cupsd ] && /etc/init.d/cupsd disable
-		return 1
-	fi
+	[ x$enabled == x1 ] || return 1
 	sed -i "s/Port.*/Port ${port}/g"  /etc/cups/cupsd.conf
 	[ -d /var/cache/cups ] || mkdir -m 0755 -p /var/cache/cups
 	[ -d /var/cups ] || mkdir -m 0755 -p /var/cups
 	[ -d /var/spool/cups/tmp ] || mkdir -m 0755 -p /var/spool/cups/tmp
-	if [ -x /etc/init.d/cupsd ]; then
-		/etc/init.d/cupsd start
-		return 0
-	fi
 	procd_open_instance
 	procd_set_param command $PROG -f
 	[ "x$logger" == x1 ] && procd_set_param stderr 1

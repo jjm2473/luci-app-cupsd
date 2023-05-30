@@ -37,6 +37,7 @@ define Package/cups/description
 endef
 
 define Package/cups/conffiles
+/etc/config/cupsd
 /etc/cups/classes.conf
 /etc/cups/cupsd.conf
 /etc/cups/printers.conf

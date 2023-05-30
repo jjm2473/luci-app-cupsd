@@ -8,24 +8,14 @@ USE_PROCD=1
 
 PROG=/usr/sbin/cupsd
 get_config() {
-        config_get_bool enabled $1 enabled 1
+	config_get_bool enabled $1 enabled 1
 	config_get_bool logger $1 logger 1
 	config_get port $1 port 631
 }
 
-cups_prepare() {
-	pgrep -f $PROG | xargs kill -9 >/dev/null 2>&1 
-	logger -t cupsd -p warn "cupsd is stop."
-}
-
-stop_service() {
-	cups_prepare
-}
-
 start_service() {
-	cups_prepare
 	config_load cupsd
-        config_foreach get_config cupsd
+	config_foreach get_config cupsd
 	[ x$enabled == x1 ] || return 1
 	sed -i "s/Port.*/Port ${port}/g"  /etc/cups/cupsd.conf
 	[ -d /var/cache/cups ] || mkdir -m 0755 -p /var/cache/cups
@@ -39,5 +29,5 @@ start_service() {
 }
 
 service_triggers() {
-      procd_add_reload_trigger "cupsd"
+	procd_add_reload_trigger "cupsd"
 }

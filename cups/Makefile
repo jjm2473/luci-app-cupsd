@@ -230,8 +230,9 @@ define Package/cups/install
 	# overwrite default config with our own
 	$(CP) ./files/etc/cups/* $(1)/etc/cups/
 	# install initscript with priority 60
-	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/init.d $(1)/etc/config
 	$(INSTALL_BIN) ./files/cupsd.init $(1)/etc/init.d/cupsd
+	$(INSTALL_CONF) ./files/cupsd.config $(1)/etc/config/cupsd
 	$(INSTALL_BIN) \
 		$(PKG_INSTALL_DIR)/usr/sbin/{cupsctl,cupsd} \
 		$(1)/usr/sbin/
